@@ -3,7 +3,10 @@ from __future__ import print_function
 import mysql.connector
 from mysql.connector import errorcode
 
-import datetime
+import random   
+import time 
+from time import localtime, strftime
+
 
 
 
@@ -13,7 +16,7 @@ TABLES = {}
 
 TABLES['chamber_probe_green'] = (
     "CREATE TABLE `chamber_probe_green`("
-    "   `id` INT unsigned NOT NULL,"
+    "   `id` INT unsigned NOT NULL AUTO_INCREMENT,"
     "   `time` TIME NOT NULL,"
     "   `temp` FLOAT NOT NULL,"
     "   PRIMARY KEY (ID)"
@@ -23,7 +26,7 @@ TABLES['chamber_probe_green'] = (
 
 TABLES['chamber_probe_blue'] = (
     "CREATE TABLE `chamber_probe_blue`("
-    "   `id` INT unsigned NOT NULL,"
+    "   `id` INT unsigned NOT NULL AUTO_INCREMENT,"
     "   `time` TIME NOT NULL,"
     "   `temp` FLOAT NOT NULL,"
     "   PRIMARY KEY (ID)"
@@ -33,7 +36,7 @@ TABLES['chamber_probe_blue'] = (
 
 TABLES['food_probe_yellow'] = (
     "CREATE TABLE `food_probe_yellow`("
-    "   `id` INT unsigned NOT NULL,"
+    "   `id` INT unsigned NOT NULL AUTO_INCREMENT,"
     "   `time` TIME NOT NULL,"
     "   `temp` FLOAT NOT NULL,"
     "   PRIMARY KEY (ID)"
@@ -43,13 +46,16 @@ TABLES['food_probe_yellow'] = (
 
 TABLES['food_probe_red'] = (
     "CREATE TABLE `food_probe_red`("
-    "   `id` INT unsigned NOT NULL,"
+    "   `id` INT unsigned NOT NULL AUTO_INCREMENT,"
     "   `time` TIME NOT NULL,"
     "   `temp` FLOAT NOT NULL,"
     "   PRIMARY KEY (ID)"
     ") ENGINE=InnoDB")
 
 
+clock = strftime("%I:%M", localtime())
+
+data = "{:.2f}".format(random.random()*100)
 
 
 cnx = mysql.connector.connect(user='root',password='Mason.830')
@@ -87,8 +93,50 @@ for table_name in TABLES:
     else:
         print("OK")
 
+
+
+
+def insertData():
+
+    while(True):
+
+        AddDataBlue = ("INSERT INTO chamber_probe_blue "
+                        "(time, temp)"
+                        "VALUES (%s, %s)") 
+
+        AddDataGreen = ("INSERT INTO chamber_probe_green "
+                        "(time, temp)"
+                        "VALUES (%s, %s)") 
+
+        AddDataYellow = ("INSERT INTO food_probe_yellow "
+                        "(time, temp)"
+                        "VALUES (%s, %s)") 
+
+        AddDataRed = ("INSERT INTO chamber_probe_blue "
+                        "(time, temp)"
+                        "VALUES (%s, %s)") 
+        
+        dataBlue = (clock, data)
+
+        dataGreen = (clock, data)
+
+        dataYellow = (clock, data)
+
+        dataRed = (clock, data)
+        print("Adding Blue Data")
+        cursor.execute(AddDataBlue, dataBlue)
+        print("Adding Green Data")
+        cursor.execute(AddDataGreen, dataGreen)
+        print("Adding Yellow Data")
+        cursor.execute(AddDataYellow, dataYellow)
+        print("Adding Red ddata")
+        cursor.execute(AddDataRed, dataRed)
+
+        cnx.commit()
+
+        time.sleep(2)
+
+insertData()
+
 cursor.close()
 cnx.close()
-
-tempTime = datetime.datetime.now()
-print(tempTime.strftime("%I") + ":" + tempTime.strftime("%M"))
