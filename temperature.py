@@ -3,6 +3,10 @@ from __future__ import print_function
 import mysql.connector
 from mysql.connector import errorcode
 
+import datetime
+
+
+
 DB_NAME = 'temperature'
 
 TABLES = {}
@@ -85,3 +89,6 @@ for table_name in TABLES:
 
 cursor.close()
 cnx.close()
+
+tempTime = datetime.datetime.now()
+print(tempTime.strftime("%I") + ":" + tempTime.strftime("%M"))
